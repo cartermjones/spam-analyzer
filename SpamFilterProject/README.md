@@ -1,4 +1,4 @@
-The spam.py script was created as part of the first project of the Information & Network security course.
+The spam.py script was created as part of the first project of the Information & Network Security course.
 
 It is a basic spam filter. It ingests a group of email files (.eml files, in this case) and checks each of the email files
 against a number of different categories of spam - if there is a preponderance of evidence that an email is spam, it is labeled as such.
