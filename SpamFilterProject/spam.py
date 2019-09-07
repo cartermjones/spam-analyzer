@@ -1,28 +1,35 @@
+# Student Name: Carter Jones
+# Student ID: 893007735
+# Project 1: Spam Filter 
+
 #The re library is necessary for processing regular expressions.
 import re
-
 #The glob library allows the processing of multiple files.
 import glob
-
 #The os library allows for us to use relative file paths.
 import os 
-
 #The sys library allows the parsing of command-line arguments
 import sys
 
+#This block of code allows us to use relative file paths in our code, and fetches the file path and target file name from the CLI.
 dirname = os.path.dirname(__file__)
 filename = os.path.join(dirname, "./" + sys.argv[1])
 target_filename = os.path.join(filename, sys.argv[2])
 
+#This line fetches all of the .eml files in the indicated directory.
 filenames = glob.glob(filename + "/*.eml")
 
+#These are the (mostly global) variables that are used in this program.
 spam_count = 0
 email_count = 0
 evidence = ""
 preponderance = 0
 spam_flag = False
 
-#The spam_detector method reduces redundancy in the spam_typer method.
+#The spam_detector() method reduces redundancy in the spam_typer() method.
+#In short, it checks the email against each item housed in a pattern, a pattern being spam words in a given category.
+#If possible spam is detected, the guilty word is concatenated to a string of evidence words, 
+#and the preponderance is incremented.
 def spam_detector(pattern, email):
     
     global evidence
@@ -33,7 +40,11 @@ def spam_detector(pattern, email):
             evidence += " " + item
             preponderance += 1
 
-#The spam_typer method ingests an email and categorizes what kind of spam, if any, it is.
+#The spam_typer() method ingests an email and categorizes what kind of spam, if any, it is.
+#Each of the patterns contains a list of words associated with a category of spam.
+#The spam_detector() method is used to check the ingested email against the particular pattern.
+#If a preponderance of evidence is reached, the spam_count is incremented. 
+#If verbosity is set to True, a message will be displayed, indicating what kind of spam a particular email is, and the evidence for that identification.
 def spam_typer(email, verbosity):
     
     global spam_count
@@ -41,6 +52,7 @@ def spam_typer(email, verbosity):
     global preponderance
     global spam_flag
     
+    #This block of code contains all of the designated spam patterns. Hard-coded for efficiency!
     commerce_pattern = ["as seen on", "buy", "buy direct", "buying judgments", "clearance", "order", "order status", "orders shipped by", "shopper", "self employed"]
     personal_pattern = ["dig up dirt on friends", "singles", "score with babes"]
     employment_pattern = ["additional income", "be your own boss", "compete for your business", "double your", "earn $", "earn extra cash", "earn per week", "expect to earn", "extra income", "home based", "home employment", "homebased", "homebased business", "income from home", "make money"]
@@ -215,14 +227,15 @@ def spam_typer(email, verbosity):
     if verbosity is True:
         spam_count = 0
 
+#This block determines what type (if any) of spam a designated email is.
 spam_typer(open(target_filename).read().lower(), True)
 if spam_flag is False:
     print(sys.argv[2] + " is ham.")
 
+#This for-loop loops through all of the emails in the directory and checks them against the spamword patterns.
 for f in filenames:
     email_count += 1
     spam_typer(open(f).read().lower(), False)
-        
-        
-
+            
+#This prints out the grand total of both spam and ham emails.
 print("Spam: " + str(spam_count) + " Ham: " + str(email_count - spam_count) + ".")
