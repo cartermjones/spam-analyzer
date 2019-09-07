@@ -1,7 +1,3 @@
-# Student Name: Carter Jones
-# Student ID: 893007735
-# Project 1: Spam Filter 
-
 #The re library is necessary for processing regular expressions.
 import re
 #The glob library allows the processing of multiple files.
