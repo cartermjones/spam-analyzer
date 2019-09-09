@@ -1,3 +1,7 @@
+# Student Name: Carter Jones
+# Student ID: 893007735
+# Project 1: Spam Filter 
+
 #The re library is necessary for processing regular expressions.
 import re
 #The glob library allows the processing of multiple files.
@@ -26,15 +30,24 @@ spam_flag = False
 #In short, it checks the email against each item housed in a pattern, a pattern being spam words in a given category.
 #If possible spam is detected, the guilty word is concatenated to a string of evidence words, 
 #and the preponderance is incremented.
-def spam_detector(pattern, email):
+def spam_detector(pattern, email, thresshold, typeword, verbosity):
     
+    global spam_count
     global evidence
     global preponderance
+    global spam_flag
 
     for item in pattern:
         if re.search(item, email):
             evidence += " " + item
             preponderance += 1
+    if preponderance > thresshold:
+        spam_count += 1
+        spam_flag = True
+        if verbosity == True:
+            print(sys.argv[2] + " is " + typeword + " spam. \nEvidence: " + evidence + ".")
+    preponderance = 0
+    evidence = ""
 
 #The spam_typer() method ingests an email and categorizes what kind of spam, if any, it is.
 #Each of the patterns contains a list of words associated with a category of spam.
@@ -67,158 +80,39 @@ def spam_typer(email, verbosity):
     urgency_pattern = ["access", "act now!", "apply now", "apply online", "call free", "call now", "can't live without", "do it today", "don't delete", "don't hesitate", "for instant access", "for only", "for you", "get it now", "get started now", "great offer", "info you requested", "information you requested", "instant limited time", "new customers only", "now", "now only", "offer expires", "once in lifetime", "one time", "only", "order now", "order today", "please read", "special promotion", "supplies are limited", "take action now", "time limited", "urgent", "while supplies last"]
     nouns_pattern = ["addresses on cd", "beverage", "bonus", "brand new pager", "cable converter", "casino", "celebrity", "copy dvds", "laser printer", "legal", "luxury car", "new domain extensions", "phone", "rolex", "stainless steel"]
 
-    spam_detector(commerce_pattern, email)
-    if preponderance > 2:
-        spam_count += 1
-        spam_flag = True
-        if verbosity == True:
-            print(sys.argv[2] + " is commerce spam. \nEvidence: " + evidence + ".")
-    preponderance = 0
-    evidence = ""
+    spam_detector(commerce_pattern, email, 2, "commerce", verbosity)
     
-    spam_detector(personal_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is personal spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(personal_pattern, email, 0, "personal", verbosity)
+
+    spam_detector(employment_pattern, email, 0, "employment", verbosity)
    
-    spam_detector(employment_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is employment spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(financial_general_pattern, email, 4, "financial - general", verbosity)
     
-    spam_detector(financial_general_pattern, email)
-    if preponderance > 4:
-        if verbosity == True:
-            print(sys.argv[2] + " is financial - general spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(general_pattern, email, 4, "general", verbosity)
     
-    spam_detector(general_pattern, email)
-    if preponderance > 4:
-        if verbosity == True:
-            print(sys.argv[2] + " is general spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(financial_business_pattern, email, 0, "financial - business", verbosity)
 
-    spam_detector(financial_business_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is financial - business spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(financial_personal_pattern, email, 0, "financial - personal", verbosity)
 
-    spam_detector(financial_personal_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is financial - personal spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(greetings_pattern, email)
-    if preponderance > 1:
-        if verbosity == True:
-            print(sys.argv[2] + " is greeting spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(marketing_pattern, email)
-    if preponderance > 5:
-        if verbosity == True:
-            print(sys.argv[2] + " is marketing spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(medical_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is medical spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(greetings_pattern, email, 1, "greeting", verbosity)
     
-    spam_detector(numbers_pattern, email)
-    if preponderance > 1:
-        if verbosity == True:
-            print(sys.argv[2] + " is numbers spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(marketing_pattern, email, 5, "marketing", verbosity)
+    
+    spam_detector(medical_pattern, email, 0, "medical", verbosity)
+    
+    spam_detector(numbers_pattern, email, 1, "numbers", verbosity)
+    
+    spam_detector(offers_pattern, email, 3, "offers", verbosity)
 
-    spam_detector(offers_pattern, email)
-    if preponderance > 3:
-        if verbosity == True:
-            print(sys.argv[2] + " is offers spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(cta_pattern, email, 1, "calls-to-action", verbosity)
 
-    spam_detector(cta_pattern, email)
-    if preponderance > 1:
-        if verbosity == True:
-            print(sys.argv[2] + " is calls-to-action spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(free_pattern, email, 1, "free", verbosity)
 
-    spam_detector(free_pattern, email)
-    if preponderance > 1:
-        if verbosity == True:
-            print(sys.argv[2] + " is free spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(descriptions_pattern, email)
-    if preponderance > 0:
-        if verbosity == True:
-            print(sys.argv[2] + " is descriptions/adjectives spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(urgency_pattern, email)
-    if preponderance > 3:
-        if verbosity == True:
-            print(sys.argv[2] + " is sense of urgency spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
-
-    spam_detector(nouns_pattern, email)
-    if preponderance > 1:
-        if verbosity == True:
-            print(sys.argv[2] + " is nouns spam. \nEvidence: " + evidence + ".")
-        spam_count += 1
-        spam_flag = True
-    preponderance = 0
-    evidence = ""
+    spam_detector(descriptions_pattern, email, 0, "descriptions/adjectives", verbosity)
+    
+    spam_detector(urgency_pattern, email, 3, "sense of urgency", verbosity)
+    
+    spam_detector(nouns_pattern, email, 1, "nouns", verbosity)
 
     if verbosity is True:
         spam_count = 0
