@@ -1,3 +1,5 @@
+# spam-analyzer
+
 The spam.py script was created as part of the first project of a graduate Information & Network Security course.
 
 It is a basic spam filter/analyzer. It ingests a group of email files (.eml files, in this case) and checks each of the email files
